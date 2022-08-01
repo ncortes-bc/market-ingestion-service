@@ -1,0 +1,10 @@
+<h1>WTH are pair dictionaries?</h1>
+<p>
+  Some exchange APIs respond use a string of concatenated tickers to identify
+  the pair(s) (for ex. BTCUSD or ETHUSDT) in a response. Because ticker strings
+  can vary in length, this makes it difficult to identify exactly which assets
+  are in a pair. To ameleorate this issue, a pair dictionary can be used, which
+  maps a concatenatenated pair of tickers to an array which explicitly defines
+  the tickers: BNBBTC => [BNB, BTC]. Some exchange APIs explicitly define assets
+  in their responses, in which case a pair dictionary need not be defined.
+</p>
