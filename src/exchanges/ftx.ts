@@ -1,32 +1,39 @@
-import axios from 'axios';
-import { exchange, pairDict, formattedQuote } from './_exchange';
+import ftxPairDict from './pair_dictionaries/ftx.json';
+import { FormattedData, ExchangeTemplate } from './_exchange';
+import { usdPriceIndex } from '../globals';
 
-export default class ftx implements exchange {
-  constructor() {}
+export const FTX: ExchangeTemplate = {
+  /*
 
-  async rawQuotes(): Promise<any> {
-    return (await axios.get('https://ftx.com/api/markets')).data.result.filter(
-      (quote) => quote.type == 'spot'
-    );
-  }
+  */
 
-  async formattedQuotes(): Promise<formattedQuote[]> {
-    const rawQuotes = await this.rawQuotes();
-    const timestamp = Date.now(); // timestamp is calculated once
+  NAME: 'FTX',
+  WS_URI: 'wss://ftx.com/ws',
+  PAIR_DICT: ftxPairDict,
+  SUBSCRIBE_MESSAGES: Object.keys(ftxPairDict).map((key) => {
+    return {
+      op: 'subscribe',
+      channel: 'ticker',
+      market: ftxPairDict[key].join('/'),
+    };
+  }),
+  WS_PROCESSOR: (rawData: any): FormattedData[] | null => {
+    const quote = JSON.parse(rawData.toString());
+    if (quote.type != 'update') return null;
 
-    return rawQuotes.map((rawQuote) => {
-      const pair = [rawQuote.baseCurrency, rawQuote.quoteCurrency];
-      const rate = Number(rawQuote.last);
-      const usdPrice = rate;
+    const pair = quote.market.split('/');
+    const rate = quote.data?.last;
 
-      return <formattedQuote>{
+    const formattedData = <FormattedData[]>[
+      {
         exchange: 'FTX',
         pair: pair,
         rate: rate,
-        usdPrice: usdPrice,
-        volume: Number(rawQuote.quoteVolume24h),
-        timestamp: timestamp,
-      };
-    });
-  }
-}
+        usdPrice: usdPriceIndex[pair[1]] * rate,
+        volume: quote.quoteVolume24h,
+        timestamp: quote.data.time,
+      },
+    ];
+    return formattedData;
+  },
+};

@@ -1,3 +1,4 @@
-import ingestionScheduler from './ingestionScheduler';
+import './db';
+import ingestQuotes from './services/ingestQuotes';
 
-ingestionScheduler();
+ingestQuotes();

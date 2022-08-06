@@ -5,14 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/index.ts"
+    "start": "nodemon src/index.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/ws": "^8.5.3",
     "axios": "^0.27.2",
     "cron": "^2.1.0",
     "dotenv": "^16.0.1",
+    "kucoin-websocket-api": "^0.2.3",
     "mongodb": "^4.8.1",
     "nodemon": "^2.0.19",
     "typescript": "^4.7.4",
