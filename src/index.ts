@@ -1,4 +1,6 @@
 import './db';
-import ingestQuotes from './services/ingestQuotes';
+import Ingestion from './services/Ingestion';
 
-ingestQuotes();
+Ingestion();
+//REST();
+//FE();
