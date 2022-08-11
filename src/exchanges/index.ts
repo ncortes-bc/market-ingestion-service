@@ -12,7 +12,7 @@ export interface FormattedQuote {
 export abstract class Exchange {
   constructor() {}
 
-  // Starts ingestion of quotes and/or chart candles
+  // Starts ingestion of quotes and/or chart candles. Should call this.storeQuotes/this.storeCandles if store option is set to True
   abstract subscribe(options?: {
     quotes?: Boolean; // Ingest quotes
     candles?: Boolean; // Ingest candlesticks
@@ -20,11 +20,12 @@ export abstract class Exchange {
     store?: Boolean; // Store processed data in the db
   }): Promise<void>;
 
-  abstract processQuotes(rawData: any): FormattedQuote[] | null; // Process rawData to produce FormatttedQuotes and FormattedCharts
+  abstract process(type: string /*Tell the processing function what type of data it is dealing with*/, rawData: any): FormattedQuote[] | FormattedCandle[] | null; // Process rawData to produce FormattedQuotes and FormattedCandles
 
-  abstract processCandles(rawData: any): FormattedCandle[] | null;
 
-  storeQuotes(formattedQuotes: FormattedQuote[]) {}
+  store(formattedData: FormattedQuote[] | FormattedCandle[]) {
+    //INCOMPLETE
+    //if ( formattedData instanceof(FormattedQuote[]) ) {}
+  }
 
-  storeCandles(formattedCandles: FormattedCandle[]) {}
 }

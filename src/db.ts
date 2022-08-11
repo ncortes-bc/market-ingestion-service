@@ -1,6 +1,6 @@
 import * as mongodb from 'mongodb';
 import * as dotenv from 'dotenv';
-
+:wq
 let price_history = {};
 
 async function connectdb() {

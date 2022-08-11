@@ -57,7 +57,7 @@ export default class Binance extends Exchange {
         ws.on('message', (rawData: RawData) => {
           const formattedQuotes = this.processQuotes(rawData);
           if (options.store && formattedQuotes)
-            this.storeQuotes(formattedQuotes);
+            this.store(formattedQuotes);
         });
         ws.on('close', this.subscribe);
       });
@@ -101,41 +101,43 @@ export default class Binance extends Exchange {
               `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}`
             )
           ).data;
-          const formattedCandles = this.processCandles({
+          const formattedCandles = this.process('candles', {
             pair: pairDict[<string>symbol],
             interval: interval,
             rawCandles: rawCandles,
           });
           if (options.store && formattedCandles)
-            this.storeCandles(formattedCandles);
+            this.store(formattedCandles);
         });
       }, 1000);
     }
   }
 
-  processCandles(rawData: any): FormattedCandle[] | null {
-    console.log(rawData);
-    return null;
-  }
+  process(type: string, rawData: any): FormattedQuote[] | FormattedCandle[] | null {
+    switch(type) {
+      case 'quotes':
+        let quotes = JSON.parse(rawData.toString());
+        const formattedData = quotes.map((quote) => {
+          const pair = pairDict[quote.s];
+          const rate = quote.h;
 
-  processQuotes(rawData: RawData): FormattedQuote[] | null {
-    let quotes = JSON.parse(rawData.toString());
-    const formattedData = quotes.map((quote) => {
-      const pair = pairDict[quote.s];
-      const rate = quote.h;
-
-      // "if" ensures pair is defined in dictionary before returning a formatted quote
-      if (pair)
-        return <FormattedQuote>{
-          exchange: 'Binance',
-          pair: pair,
-          rate: rate,
-          usdPrice: usdPriceIndex[pair[1]] * rate,
-          volume: quote.v,
-          timestamp: quote.E,
-        };
-      return null;
-    });
-    return formattedData;
+          // "if" ensures pair is defined in dictionary before returning a formatted quote
+          if (pair)
+            return <FormattedQuote>{
+              exchange: 'Binance',
+              pair: pair,
+              rate: rate,
+              usdPrice: usdPriceIndex[pair[1]] * rate,
+              volume: quote.v,
+              timestamp: quote.E,
+            };
+          return null;
+        });
+        return formattedData;
+      case 'candles': //INCOMPLETE
+        console.log(rawData.toString())
+        return null;
+      default: return null
+    }
   }
 }
