@@ -22,10 +22,9 @@ export abstract class Exchange {
 
   abstract process(type: string /*Tell the processing function what type of data it is dealing with*/, rawData: any): FormattedQuote[] | FormattedCandle[] | null; // Process rawData to produce FormattedQuotes and FormattedCandles
 
-
-  store(formattedData: FormattedQuote[] | FormattedCandle[]) {
+  store(formattedData: FormattedQuote[] | FormattedCandle[] | null) {
     //INCOMPLETE
     //if ( formattedData instanceof(FormattedQuote[]) ) {}
   }
-
 }
+

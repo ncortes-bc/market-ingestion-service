@@ -43,7 +43,7 @@ export default class Binance extends Exchange {
     historicalCandles?: Boolean;
     store?: Boolean;
   }): Promise<void> {
-    const intervals = ['1m', '5m', '30m', '1h', '4h', '1d', '1w']; // Referneced in historicalCandles and candles
+    const intervals = ['1m', '5m', '30m', '1h', '4h', '1d', '1w'];
 
     if (!options)
       console.log('WARNING: No options supplied to Binance subscription');
@@ -55,7 +55,7 @@ export default class Binance extends Exchange {
       ws.on('open', () => {
         console.log('Subscribed to Binance quotes');
         ws.on('message', (rawData: RawData) => {
-          const formattedQuotes = this.processQuotes(rawData);
+          const formattedQuotes = this.process('quotes', rawData);
           if (options.store && formattedQuotes)
             this.store(formattedQuotes);
         });
