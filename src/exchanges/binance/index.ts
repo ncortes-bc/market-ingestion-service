@@ -1,5 +1,5 @@
 import pairDict from './pairDict.json';
-import { FormattedQuote, FormattedCandle, Exchange } from '..';
+import { FormattedQuote, FormattedCandle, Exchange } from '../types';
 import { usdPriceIndex, stableCoins } from '../../globals';
 import { RawData, WebSocket } from 'ws';
 import axios from 'axios';
@@ -57,7 +57,7 @@ export default class Binance extends Exchange {
         ws.on('message', (rawData: RawData) => {
           const formattedQuotes = this.process('quotes', rawData);
           if (options.store && formattedQuotes)
-            this.store(formattedQuotes);
+            this.store('quotes', formattedQuotes);
         });
         ws.on('close', this.subscribe);
       });
@@ -107,7 +107,7 @@ export default class Binance extends Exchange {
             rawCandles: rawCandles,
           });
           if (options.store && formattedCandles)
-            this.store(formattedCandles);
+            this.store('candles', formattedCandles);
         });
       }, 1000);
     }
@@ -135,9 +135,10 @@ export default class Binance extends Exchange {
         });
         return formattedData;
       case 'candles': //INCOMPLETE
-        console.log(rawData.toString())
+        console.log(rawData.toString());
         return null;
-      default: return null
+      default:
+        throw('Unrecognized type specified');
     }
   }
 }

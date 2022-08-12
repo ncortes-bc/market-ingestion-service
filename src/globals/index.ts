@@ -1,3 +1,3 @@
-export var usdPriceIndex = {};
-export var exchanges = [];
-export const stableCoins = ['USD', 'USDT'];
+export var usdPriceIndex: Object = {};
+export var exchangeList: Array<any> = [];
+export const stableCoins: Array<String> = ['USD', 'USDT'];
